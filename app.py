@@ -1,35 +1,8 @@
 import streamlit as st
-import boto3
-
-from assemble_utils import upload_to_assemle
+from assemble_utils import upload_to_assemble, upload_to_s3
 from utils import vtt_string_to_dataframe, data_to_webvtt
 
 st.set_page_config(layout="wide")
-
-AWS_S3_BUCKET_NAME = st.secrets["AWS_S3_BUCKET_NAME"]
-AWS_REGION = st.secrets["AWS_REGION"]
-AWS_ACCESS_KEY = st.secrets["AWS_ACCESS_KEY"]
-AWS_SECRET_KEY = st.secrets["AWS_SECRET_KEY"]
-
-
-@st.cache_data
-def upload_to_s3(uploaded_file):
-    s3_client = boto3.client(
-        service_name="s3",
-        region_name=AWS_REGION,
-        aws_access_key_id=AWS_ACCESS_KEY,
-        aws_secret_access_key=AWS_SECRET_KEY,
-    )
-
-    s3_client.upload_fileobj(uploaded_file, AWS_S3_BUCKET_NAME, uploaded_file.name)
-
-    url = "https://s3-%s.amazonaws.com/%s/%s" % (
-        AWS_REGION,
-        AWS_S3_BUCKET_NAME,
-        uploaded_file.name,
-    )
-    return url
-
 
 if "processed_files" not in st.session_state:
     st.session_state.processed_files = dict()
@@ -59,23 +32,21 @@ if uploaded_file is not None:
 if st.session_state.processed_files:
     for file_id, file_data in st.session_state.processed_files.items():
         if file_data["status"] == "uploaded_to_s3":
-            vtt_text = upload_to_assemle(file_data["public_url"])
-            with right:
-                st.download_button(
-                    label="Download GENERATED VTT",
-                    data=vtt_text,
-                    file_name=f"{file_data['file'].name}.vtt",
-                    mime="text/vtt",
-                )
+            vtt_text = upload_to_assemble(file_data["public_url"])
             st.session_state.processed_files[file_id]["status"] = "processed"
             st.session_state.processed_files[file_id]["vtt"] = vtt_text
         elif file_data["status"] == "transcribed":
             vtt_text = file_data["vtt"]
-
+        with right:
+            st.download_button(
+                label="Download GENERATED VTT",
+                data=st.session_state.processed_files[file_id]["vtt"],
+                file_name=f"{file_data['file'].name}.vtt",
+                mime="text/vtt",
+            )
 
 if item := list(st.session_state.processed_files.values()):
-    vtt = item[0]["vtt"]
-    df = vtt_string_to_dataframe(vtt)
+    df = vtt_string_to_dataframe(item[0]["vtt"])
     with left:
         edited_df = st.data_editor(
             df,
@@ -95,6 +66,7 @@ if item := list(st.session_state.processed_files.values()):
                 ),
             },
         )
+
     edited_webvtt_string = data_to_webvtt(edited_df.to_dict(orient="records"))
 
     with right:
