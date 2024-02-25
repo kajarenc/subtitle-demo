@@ -1,3 +1,4 @@
-streamlit-1.31.1-py2.py3-none-any.whl
+streamlit-nightly
 boto3
 assemblyai
+webvtt-py
