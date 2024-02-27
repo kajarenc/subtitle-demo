@@ -1,6 +1,7 @@
 import streamlit as st
+
 from assemble_utils import upload_to_assemble, upload_to_s3
-from utils import vtt_string_to_dataframe, data_to_webvtt
+from utils import data_to_webvtt, vtt_string_to_dataframe
 
 st.set_page_config(layout="wide")
 
@@ -70,7 +71,7 @@ if item := list(st.session_state.processed_files.values()):
     edited_webvtt_string = data_to_webvtt(edited_df.to_dict(orient="records"))
 
     with right:
-        st.video(file_data["file"], subtitles=edited_webvtt_string)
+        st.video(file_data["file"], subtitles=bytes(edited_webvtt_string, "utf-8"))
         st.download_button(
             label="Download EDITED VTT",
             data=edited_webvtt_string,

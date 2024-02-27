@@ -2,3 +2,6 @@ streamlit-nightly
 boto3
 assemblyai
 webvtt-py
+sherpa-onnx>=1.7.15
+ffmpeg-python
+huggingface_hub
