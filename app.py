@@ -71,7 +71,7 @@ if item := list(st.session_state.processed_files.values()):
     edited_webvtt_string = data_to_webvtt(edited_df.to_dict(orient="records"))
 
     with right:
-        st.video(file_data["file"], subtitles=bytes(edited_webvtt_string, "utf-8"))
+        st.video(file_data["file"], subtitles=edited_webvtt_string)
         st.download_button(
             label="Download EDITED VTT",
             data=edited_webvtt_string,
