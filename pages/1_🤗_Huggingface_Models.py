@@ -61,7 +61,7 @@ st.header("Subtitle Generation with Hugging Face LLMs", divider=True)
 
 language_choices = list(language_to_models.keys())
 
-language_radio = st.radio("Select a language", language_choices, index=0, horizontal=True)
+language_radio = st.radio("Select a language", language_choices, index=2, horizontal=True)
 
 model_selectbox = st.selectbox(
     "Select a model", language_to_models[language_radio], index=0
