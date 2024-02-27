@@ -113,7 +113,7 @@ if uploaded_video is not None:
     st.session_state.edited_subtitles = edited_df
     
     edited_subtitles = data_to_webvtt(st.session_state.edited_subtitles.to_dict(orient="records"))
-    video_placeholder.video(uploaded_video, start_time=1, subtitles=edited_subtitles)
+    video_placeholder.video(uploaded_video, start_time=1, subtitles=edited_subtitles.encode('utf-8'))
 
     st.download_button(
         label=f":rainbow[Download {vtt_filename.name}]",
