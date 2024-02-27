@@ -67,7 +67,7 @@ model_selectbox = st.selectbox(
     "Select a model", language_to_models[language_radio], index=0
 )
 
-uploaded_video = st.file_uploader("Upload a video from disk", type=["mp4", "webm"])
+uploaded_video = st.file_uploader("Upload a video to caption", type=["mp4", "webm"])
 
 video_placeholder = st.empty()
 
