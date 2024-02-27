@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 
 import streamlit as st
+
+st.set_page_config(layout="centered")
 from streamlit.elements.lib.subtitle_utils import _srt_to_vtt
 
 from decode import decode
@@ -110,7 +112,7 @@ if uploaded_video is not None:
     # Store the edited subtitles in session_state
     st.session_state.edited_subtitles = edited_df
     
-    edited_subtitles = data_to_webvtt(st.session_state.edited_subtitles)
+    edited_subtitles = data_to_webvtt(st.session_state.edited_subtitles.to_dict(orient="records"))
     video_placeholder.video(uploaded_video, start_time=1, subtitles=edited_subtitles)
 
     st.download_button(
