@@ -2,6 +2,7 @@ import streamlit as st
 
 from assemble_utils import upload_to_assemble, upload_to_s3
 from utils import data_to_webvtt, vtt_string_to_dataframe
+from copy import deepcopy
 
 st.set_page_config(layout="wide")
 
@@ -22,7 +23,7 @@ if uploaded_file is not None:
             "public_url": None,
             "vtt": "",
         }
-        public_url = upload_to_s3(uploaded_file)
+        public_url = upload_to_s3(deepcopy(uploaded_file))
         st.session_state.processed_files[uploaded_file.file_id][
             "public_url"
         ] = public_url
@@ -71,7 +72,7 @@ if item := list(st.session_state.processed_files.values()):
     edited_webvtt_string = data_to_webvtt(edited_df.to_dict(orient="records"))
 
     with right:
-        st.video(file_data["file"], subtitles=edited_webvtt_string)
+        st.video(item[0]["file"], subtitles=edited_webvtt_string)
         st.download_button(
             label="Download EDITED VTT",
             data=edited_webvtt_string,
