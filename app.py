@@ -1,8 +1,9 @@
+from copy import deepcopy
+
 import streamlit as st
 
 from assemble_utils import upload_to_assemble, upload_to_s3
 from utils import data_to_webvtt, vtt_string_to_dataframe
-from copy import deepcopy
 
 st.set_page_config(layout="wide")
 
@@ -10,7 +11,7 @@ if "processed_files" not in st.session_state:
     st.session_state.processed_files = dict()
 
 st.header("Generate Subtitles with Assembly AI, and edit them in place!", divider=True)
-uploaded_file = st.file_uploader("Choose a file")
+uploaded_file = st.file_uploader("Upload a video to caption", type=["mp4", "webm"])
 
 left, _, right = st.columns([45, 10, 45])
 
